@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YusufMart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .login-container {
+            width: 350px;
+            margin: 100px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        input {
+            width: 95%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        label {
+            font-weight: bold;
+            text-align: left;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .error-msg {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .success-msg {
+            color: #28a745;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN PAGE -->
+    <div id="login-page" class="page active">
+        <div class="login-container">
+            <h1>YusufMart</h1>
+            <h2>Login</h2>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <label>Email</label>
+                <input type="email" id="login-email" placeholder="Enter your email" required>
+                <label>Password</label>
+                <input type="password" id="login-password" placeholder="Enter your password" required>
+                <br><br>
+                <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="#" onclick="showPage('register-page')">Register</a></p>
+        </div>
+    </div>
+
+    <!-- REGISTER PAGE -->
+    <div id="register-page" class="page">
+        <div class="login-container">
+            <h1>YusufMart</h1>
+            <h2>Register</h2>
+            <form id="register-form" onsubmit="handleRegister(event)">
+                <label>Full Name</label>
+                <input type="text" id="reg-name" placeholder="Enter your full name" required>
+                <label>Email</label>
+                <input type="email" id="reg-email" placeholder="Enter your email" required>
+                <label>Password</label>
+                <input type="password" id="reg-password" placeholder="Create a password" required>
+                <label>Confirm Password</label>
+                <input type="password" id="reg-confirm" placeholder="Confirm your password" required>
+                <br><br>
+                <button type="submit">Register</button>
+            </form>
+            <p>Already have an account? <a href="#" onclick="showPage('login-page')">Login</a></p>
+        </div>
+    </div>
+
+    <!-- HOME PAGE (after login) -->
+    <div id="home-page" class="page">
+        <div class="login-container" style="width: 500px;">
+            <h1>YusufMart</h1>
+            <h2>Welcome, <span id="welcome-name"></span>!</h2>
+            <p>Email: <span id="welcome-email"></span></p>
+            <br>
+            <button onclick="handleLogout()">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        // Simple local storage-based user management (simulates backend)
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('yusufmart_users') || '[]');
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('yusufmart_users', JSON.stringify(users));
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const users = getUsers();
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                localStorage.setItem('yusufmart_current_user', JSON.stringify(user));
+                document.getElementById('welcome-name').textContent = user.name;
+                document.getElementById('welcome-email').textContent = user.email;
+                showPage('home-page');
+            } else {
+                alert('Invalid email or password');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+
+            if (password !== confirm) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            const users = getUsers();
+            if (users.find(u => u.email === email)) {
+                alert('Email already exists');
+                return;
+            }
+
+            const newUser = { name, email, password, role: 'customer' };
+            users.push(newUser);
+            saveUsers(users);
+            alert('Registration successful! Please login.');
+            showPage('login-page');
+            document.getElementById('login-form').reset();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('yusufmart_current_user');
+            showPage('login-page');
+            document.getElementById('login-form').reset();
+        }
+
+        // Check if user is already logged in
+        (function () {
+            const user = JSON.parse(localStorage.getItem('yusufmart_current_user'));
+            if (user) {
+                document.getElementById('welcome-name').textContent = user.name;
+                document.getElementById('welcome-email').textContent = user.email;
+                showPage('home-page');
+            }
+        })();
+    </script>
+
+</body>
+</html>
