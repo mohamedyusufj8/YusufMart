@@ -1,0 +1,6 @@
+# Sprint Retrospective Log (RETRO.md)
+
+- **Sprint 1 (Jul 27 - Aug 9)**: What worked: Layered MVC architecture and HikariCP connection pool initialized smoothly; What didn't: Session fixation edge cases required explicit `changeSessionId()`; One change for next sprint: Implement integration tests earlier during servlet development.
+- **Sprint 2 (Aug 10 - Aug 23)**: What worked: Product listing CRUD and category indexing performed efficiently; What didn't: Managing atomic stock deduction across concurrent checkouts needed explicit database transactions; One change for next sprint: Use transaction isolation checks and rollback testing.
+- **Sprint 3 (Aug 24 - Sep 6)**: What worked: Buyer search/filter queries with PreparedStatement and category chips worked seamlessly; What didn't: Synchronizing cart state between sessions; One change for next sprint: Persist cart directly in database `cart_items` table.
+- **Sprint 4 (Sep 7 - Sep 20)**: What worked: Security checklist completed with 100% PreparedStatement compliance, BCrypt password hashing, and custom error pages; What didn't: Packaging embedded runner with external Tomcat JSP compilation; One change for next sprint: Prepared embedded Tomcat runner alongside war packaging for instant grading and evaluation.

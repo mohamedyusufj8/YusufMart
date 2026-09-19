@@ -1,41 +1,20 @@
 package com.yusuf.yusufmart.dao;
 
-import com.yusuf.yusufmart.config.DatabaseConfig;
 import com.yusuf.yusufmart.model.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
-public class UserDAO {
-    public User findByEmail(String email) throws SQLException {
-        String sql = """
-                SELECT id, name, email, password, role
-                FROM users
-                WHERE email = ?
-                """;
-
-        try (Connection connection =
-                     DatabaseConfig.getDataSource().getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
-
-            statement.setString(1, email);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-
-                    return new User(
-                            resultSet.getInt("id"),
-                            resultSet.getString("name"),
-                            resultSet.getString("email"),
-                            resultSet.getString("password"),
-                            resultSet.getString("role")
-                    );
-                }
-                return null;
-            }
-        }
-    }
+/**
+ * Data Access Object interface for User entities.
+ */
+public interface UserDAO {
+    User create(User user) throws SQLException;
+    Optional<User> findById(int id) throws SQLException;
+    Optional<User> findByEmail(String email) throws SQLException;
+    List<User> findAll() throws SQLException;
+    boolean update(User user) throws SQLException;
+    boolean delete(int id) throws SQLException;
+    long count() throws SQLException;
 }

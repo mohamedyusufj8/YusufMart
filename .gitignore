@@ -1,0 +1,26 @@
+# Maven build output
+target/
+*.war
+*.jar
+
+# Local database files
+data/
+*.mv.db
+*.trace.db
+
+# Sensitive credentials & environment files (Section 9 & 18)
+config.properties
+.env
+
+# IDE and Editor files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+.smarttomcat/
+
+# OS temporary files
+Thumbs.db
+.DS_Store

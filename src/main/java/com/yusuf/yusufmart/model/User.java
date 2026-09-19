@@ -1,50 +1,107 @@
 package com.yusuf.yusufmart.model;
 
-public class User {
+import java.io.Serializable;
+import java.sql.Timestamp;
+
+/**
+ * User entity representing buyers, sellers, and administrators.
+ */
+public class User implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private String name;
     private String email;
-    private String password;
-    private String role;
-    public User(){
+    private String passwordHash;
+    private Role role;
+    private Timestamp createdAt;
+
+    public User() {
     }
-    public User(int id, String name, String email, String password, String role) {
+
+    public User(int id, String name, String email, String passwordHash, Role role, Timestamp createdAt) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.passwordHash = passwordHash;
+        this.role = role;
+        this.createdAt = createdAt;
+    }
+
+    public User(String name, String email, String passwordHash, Role role) {
+        this.name = name;
+        this.email = email;
+        this.passwordHash = passwordHash;
         this.role = role;
     }
-    public int getId(){
+
+    public int getId() {
         return id;
-    }
-    public String getName(){
-        return name;
-    }
-    public String getEmail(){
-        return email;
-    }
-    public String getPassword(){
-        return password;
-    }
-    public String getRole(){
-        return role;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
-    public void setPassword(String password) {
-        this.password = password;
+
+    public String getPasswordHash() {
+        return passwordHash;
     }
-    public void setRole(String role) {
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public boolean isBuyer() {
+        return role == Role.BUYER;
+    }
+
+    public boolean isSeller() {
+        return role == Role.SELLER;
+    }
+
+    public boolean isAdmin() {
+        return role == Role.ADMIN;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                '}';
     }
 }
