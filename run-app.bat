@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:: Navigate to project directory
+:: 1. Navigate to project root directory
 cd /d "%~dp0"
 
 echo ================================================================
@@ -10,7 +10,20 @@ echo       Anna University R2025 Semester 3 Deliverable
 echo ================================================================
 echo.
 
-:: Detect Maven command without space-handling issues
+:: 2. Ensure JAVA_HOME is configured
+if "%JAVA_HOME%"=="" (
+    if exist "C:\Users\MOHAME~1\AppData\Local\Programs\ECLIPS~1\jdk-25.0.4.101-hotspot" (
+        set "JAVA_HOME=C:\Users\MOHAME~1\AppData\Local\Programs\ECLIPS~1\jdk-25.0.4.101-hotspot"
+    ) else if exist "C:\Users\MOHAMED YUSUF\AppData\Local\Programs\Eclipse Adoptium\jdk-25.0.4.101-hotspot" (
+        set "JAVA_HOME=C:\Users\MOHAMED YUSUF\AppData\Local\Programs\Eclipse Adoptium\jdk-25.0.4.101-hotspot"
+    )
+)
+
+if not "%JAVA_HOME%"=="" (
+    set "PATH=%JAVA_HOME%\bin;%PATH%"
+)
+
+:: 3. Detect Maven
 set "MVN_CMD="
 
 if exist "C:\maven\bin\mvn.cmd" (
@@ -29,19 +42,23 @@ if exist "C:\maven\bin\mvn.cmd" (
 
 if "%MVN_CMD%"=="" (
     echo [ERROR] Maven was not found on your system.
-    echo Please verify Maven installation.
     pause
     exit /b 1
 )
 
-echo [*] Launching YusufMart Server on http://localhost:8080/yusufmart ...
-echo [*] Press Ctrl+C anytime to stop the server.
+echo [*] Starting YusufMart server...
+echo [*] Opening your browser at http://localhost:8080/yusufmart ...
+echo [*] KEEP THIS WINDOW OPEN while using the application!
 echo.
 
-call "%MVN_CMD%" compile exec:java -Dexec.mainClass="com.yusuf.yusufmart.ServerRunner"
+:: 4. Automatically open Chrome / default browser after 3 seconds in background
+start "" cmd /c "timeout /t 3 /nobreak >nul && start http://localhost:8080/yusufmart"
+
+:: 5. Launch Server
+call "%MVN_CMD%" exec:java -Dexec.mainClass="com.yusuf.yusufmart.ServerRunner"
 
 if %ERRORLEVEL% NEQ 0 (
     echo.
-    echo [ERROR] Server encountered an error.
+    echo [ERROR] Server stopped with error code %ERRORLEVEL%.
     pause
 )
