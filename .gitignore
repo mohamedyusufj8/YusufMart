@@ -24,3 +24,7 @@ config.properties
 # OS temporary files
 Thumbs.db
 .DS_Store
+
+# Cloudflare Tunnel binaries & credentials
+cloudflared.exe
+config.yml

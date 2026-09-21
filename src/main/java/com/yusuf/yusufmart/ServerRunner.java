@@ -10,7 +10,7 @@ import java.io.File;
 
 /**
  * Embedded Tomcat server runner for local development, instant testing, and grading demos.
- * Launches YusufMart on http://localhost:8080/yusufmart with full JSP and servlet support.
+ * Mounts both root ("") and "/yusufmart" contexts for seamless Cloudflare Tunnel integration.
  */
 public class ServerRunner {
 
@@ -34,23 +34,32 @@ public class ServerRunner {
         tomcat.setPort(Integer.parseInt(webPort));
         tomcat.getConnector(); // Trigger the creation of default connector
 
-        String contextPath = "/yusufmart";
-        StandardContext ctx = (StandardContext) tomcat.addWebapp(contextPath, webappDir.getAbsolutePath());
-        ctx.setParentClassLoader(ServerRunner.class.getClassLoader());
+        // Mount at both root ("") and "/yusufmart" so Cloudflare and localhost links work directly
+        StandardContext ctxRoot = (StandardContext) tomcat.addWebapp("", webappDir.getAbsolutePath());
+        ctxRoot.setParentClassLoader(ServerRunner.class.getClassLoader());
+
+        StandardContext ctxYm = (StandardContext) tomcat.addWebapp("/yusufmart", webappDir.getAbsolutePath());
+        ctxYm.setParentClassLoader(ServerRunner.class.getClassLoader());
 
         // Configure classes location for embedded runner
         File additionWebInfClasses = new File("target/classes");
         if (additionWebInfClasses.exists()) {
-            WebResourceRoot resources = new StandardRoot(ctx);
-            resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes",
+            WebResourceRoot resourcesRoot = new StandardRoot(ctxRoot);
+            resourcesRoot.addPreResources(new DirResourceSet(resourcesRoot, "/WEB-INF/classes",
                     additionWebInfClasses.getAbsolutePath(), "/"));
-            ctx.setResources(resources);
+            ctxRoot.setResources(resourcesRoot);
+
+            WebResourceRoot resourcesYm = new StandardRoot(ctxYm);
+            resourcesYm.addPreResources(new DirResourceSet(resourcesYm, "/WEB-INF/classes",
+                    additionWebInfClasses.getAbsolutePath(), "/"));
+            ctxYm.setResources(resourcesYm);
         }
 
         System.out.println("==================================================================");
         System.out.println("   YUSUF MART E-COMMERCE APPLICATION STARTED SUCCESSFULLY!       ");
-        System.out.println("   Live Application URL: http://localhost:" + webPort + contextPath + "   ");
-        System.out.println("   Health Check URL:     http://localhost:" + webPort + contextPath + "/api/v1/health ");
+        System.out.println("   Local URL:        http://localhost:" + webPort + "/yusufmart   ");
+        System.out.println("   Root URL:         http://localhost:" + webPort + "/            ");
+        System.out.println("   Health Check API: http://localhost:" + webPort + "/api/v1/health");
         System.out.println("==================================================================");
         System.out.println("   Default Accounts:");
         System.out.println("     - Admin:  admin@yusufmart.com  / Admin@123");
