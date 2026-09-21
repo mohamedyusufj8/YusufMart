@@ -60,6 +60,7 @@ public class ServerRunner {
         System.out.println("   Local URL:        http://localhost:" + webPort + "/yusufmart   ");
         System.out.println("   Root URL:         http://localhost:" + webPort + "/            ");
         System.out.println("   Health Check API: http://localhost:" + webPort + "/api/v1/health");
+        System.out.println("   H2 DB Console:    http://localhost:" + webPort + "/h2-console  ");
         System.out.println("==================================================================");
         System.out.println("   Default Accounts:");
         System.out.println("     - Admin:  admin@yusufmart.com  / Admin@123");

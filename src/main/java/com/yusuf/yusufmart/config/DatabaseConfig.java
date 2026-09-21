@@ -41,7 +41,7 @@ public class DatabaseConfig {
 
             String jdbcUrl = System.getenv("JDBC_URL");
             if (jdbcUrl == null || jdbcUrl.isBlank()) {
-                jdbcUrl = props.getProperty("db.url", "jdbc:h2:./data/yusufmart;DB_CLOSE_DELAY=-1");
+                jdbcUrl = props.getProperty("db.url", "jdbc:h2:./data/yusufmart;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE");
             }
 
             String user = System.getenv("JDBC_USER");
